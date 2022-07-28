@@ -1,0 +1,57 @@
+name: release golang
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  check:
+    name: Per-check for current tag
+    runs-on: ubuntu-18.04
+    continue-on-error: false
+    outputs:
+      tag_annotated: ${{ steps.check-tag-annotated.outputs.tag_annotated }}
+
+    steps:
+      - name: Checkout golang core code
+        uses: actions/checkout@v2
+        with:
+          path: hzmantu
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+  build:
+    name: Build golang binary
+    needs: check
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+
+    steps:
+      - name: Set up Go 1.16
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16.15
+
+      - name: Get latest version and release
+        run: |
+          VERSION=$(git tag -l --sort=-v:refname | head -n 1 | tr -d v)
+          RELEASE=$(git describe --long | cut -f2 -d-)
+          echo "build_version=$VERSION" >> $GITHUB_ENV
+          echo "build_release=$RELEASE" >> $GITHUB_ENV
+        working-directory: golang
+
+      - name: Build golang binary and packages for Linux
+        if: matrix.os == 'ubuntu-18.04'
+        run: |
+          go build -ldflags "-s -w" -o ./bin/golang main.go
+          mv ./bin/golang ./bin/golang-amd64
+        working-directory: golang
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: golang
+          path: golang/bin/*
+          retention-days: 1

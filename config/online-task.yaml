@@ -1,0 +1,69 @@
+---
+# 监控
+stat_addr: "127.0.0.1:12800"
+stat_path: "/metrics"
+
+singleRowNums: 2500
+readerNums: 1
+writerNums: 1
+
+# 输入源
+inputs:
+#  - driver: mysql
+#    name: old-pre
+#    address: "mainto-rw-pre-outer2.mysql.rds.aliyuncs.com:3306"
+#    user: "pre"
+#    password: "Al7ug0EvXxTG6hFK"
+#    charset: "utf8mb4"
+#    only: ["himo-micro-manage-auth"]
+#    maxConnNums: 3
+  - driver: mysql
+    name: k8s-himo
+    address: "rr-bp195u46j99asww65wm.mysql.rds.aliyuncs.com:3306"
+    user: "data"
+    password: "jSWnS5JLwJhznPyx"
+    charset: "utf8mb4"
+    maxConnNums: 4
+  - driver: mysql
+    name: k8s-cloud
+    address: "rr-bp1kq97aje09a8gufho.mysql.rds.aliyuncs.com:3306"
+    user: "data"
+    password: "VFpu4PzsW38RWqpk"
+    charset: "utf8mb4"
+    maxConnNums: 4
+  - driver: mysql
+    name: k8s-root
+    address: "rr-bp1o44o31e1jzxi6x5o.mysql.rds.aliyuncs.com:3306"
+    user: "data"
+    password: "jSWnS5JLwJhznPyx"
+    charset: "utf8mb4"
+    exclude: [
+        "himo-micro-staff",
+        "sync-market",
+        "himo-micro-manage-auth",
+        "himo-micro-payment",
+        "project-oa",
+        "project-ebs.message_logs",
+        "project-ebs.failed_jobs",
+        "project-ebs.message_error_logs",
+        "project-ebs.beisen_logs",
+        "project-ebs.erp_log_ns"
+    ]
+    maxConnNums: 4
+# 输出源
+output:
+  driver: mysql
+  name: output-test
+  address: "mainto-rw-pre.mysql.rds.aliyuncs.com:3306"
+  user: "pre_admin"
+  password: "b7ECMzUIRrvBHC0X"
+  charset: "utf8mb4"
+  maxConnNums: 10
+#  exclude: ["himo-micro-staff"]
+#  address: "127.0.0.1:13306"
+#  user: "root"
+#  password: "password"
+# 提取配置
+
+# 过滤配置
+filters:

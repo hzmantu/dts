@@ -1,0 +1,33 @@
+---
+# 监控
+stat_addr: "127.0.0.1:12800"
+stat_path: "/metrics"
+
+singleRowNums: 5000
+readerNums: 10
+writerNums: 10
+
+# 输入源
+inputs:
+  - driver: mysql
+    name: k8s-himo
+    address: "rr-bp1zojkah3n0d7842wo.mysql.rds.aliyuncs.com:3306"
+    user: "data"
+    password: "jSWnS5JLwJhznPyx"
+    charset: "utf8mb4"
+    only: ["project-picture-online"]
+    maxConnNums: 10
+# 输出源
+output:
+  driver: mysql
+  name: polar-db
+  address: "rm-bp1lc4qv5r1z32icj.mysql.rds.aliyuncs.com:3306"
+  user: "pre"
+  password: "Al7ug0EvXxTG6hFK"
+  only: ["project-picture-online"]
+  charset: "utf8mb4"
+  maxConnNums: 10
+# 提取配置
+
+# 过滤配置
+filters:
