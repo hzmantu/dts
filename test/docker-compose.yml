@@ -1,0 +1,61 @@
+version: "3.7"
+services:
+  input-first:
+    platform: linux/x86_64
+    image: mysql:5.7
+    command:
+      --server_id=100
+      --log-bin=mysql-bin
+      --sync_binlog=1
+      --binlog-ignore-db=mysql
+      --binlog_format=row
+      --expire_logs_days=7
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+      --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+    volumes:
+      - ./input-first:/var/lib/mysql/
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+#      MYSQL_PASSWORD: password
+#      MYSQL_USER: dts
+    ports:
+      - "3307:3306"
+  input-second:
+    platform: linux/x86_64
+    image: mysql:5.7
+    command:
+      --server_id=100
+      --log-bin=mysql-bin
+      --sync_binlog=1
+      --binlog-ignore-db=mysql
+      --binlog_format=row
+      --expire_logs_days=7
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+      --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+    volumes:
+      - ./input-second:/var/lib/mysql/
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+#      MYSQL_PASSWORD: password
+#      MYSQL_USER: dts
+    ports:
+      - "3308:3306"
+  output-test:
+    platform: linux/x86_64
+    image: mysql:5.7
+    volumes:
+      - ./output-test:/var/lib/mysql/
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+#      MYSQL_PASSWORD: password
+#      MYSQL_USER: dts
+    ports:
+      - "3309:3306"
